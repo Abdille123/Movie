@@ -37,7 +37,7 @@ return [
 
     'omdb' => [
         'key' => env('OMDB_API_KEY'),
-        'url' => env('OMDB_API_URL', 'https://www.omdbapi.com/'),
+        'url' => env('OMDB_BASE_URL', env('OMDB_API_URL', 'https://www.omdbapi.com/')),
         'featured_ids' => array_values(array_filter(array_map(
             static fn (string $value) => trim($value),
             explode(',', (string) env('OMDB_FEATURED_IDS', 'tt1375666,tt0816692,tt0468569'))
