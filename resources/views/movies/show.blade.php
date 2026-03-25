@@ -5,9 +5,14 @@
 @section('content')
     <section class="detail-hero tone-{{ $movie->tone }}">
         <div class="detail-poster">
-            <span>{{ $movie->genre }}</span>
-            <strong>{{ $movie->title }}</strong>
-            <small>{{ $movie->tagline }}</small>
+            @if ($movie->poster_url)
+                <img class="detail-poster-image" src="{{ $movie->poster_url }}" alt="{{ $movie->title }} poster" referrerpolicy="no-referrer">
+            @endif
+            <div class="poster-content">
+                <span>{{ $movie->genre }}</span>
+                <strong>{{ $movie->title }}</strong>
+                <small>{{ $movie->tagline }}</small>
+            </div>
         </div>
 
         <div class="detail-copy">
@@ -15,6 +20,9 @@
             <h1>{{ $movie->title }}</h1>
             <p class="detail-tagline">{{ $movie->tagline }}</p>
             <p>{{ $movie->synopsis }}</p>
+            @if ($movie->imdb_id)
+                <p class="movie-source">IMDb ID: {{ $movie->imdb_id }}{{ $movie->director ? ' · '.$movie->director : '' }}</p>
+            @endif
 
             <div class="detail-metrics">
                 <span>{{ $movie->release_year }}</span>
@@ -70,6 +78,9 @@
                 <span class="eyebrow">Review summary</span>
                 <h2><span data-review-average>{{ number_format((float) ($movie->reviews_avg_rating ?? 0), 1) }}</span>/5 average</h2>
                 <p><strong data-review-count>{{ $movie->reviews_count }}</strong> audience reviews stored in the database.</p>
+                @if ($movie->last_synced_at)
+                    <p class="status-copy">Movie details last synced {{ $movie->last_synced_at->diffForHumans() }}.</p>
+                @endif
             </article>
         </aside>
     </section>

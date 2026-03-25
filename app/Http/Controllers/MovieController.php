@@ -3,12 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
+use App\Services\MovieSyncService;
 use Illuminate\View\View;
 
 class MovieController extends Controller
 {
+    public function __construct(
+        private readonly MovieSyncService $movieSyncService,
+    ) {}
+
     public function index(): View
     {
+        $this->movieSyncService->syncFeaturedMovies();
+
         $movies = Movie::query()
             ->with(['showtimes', 'reviews'])
             ->withCount('reviews')
@@ -28,6 +35,8 @@ class MovieController extends Controller
 
     public function show(Movie $movie): View
     {
+        $movie = $this->movieSyncService->refreshMovie($movie);
+
         $movie->load(['showtimes', 'reviews'])
             ->loadCount('reviews')
             ->loadAvg('reviews', 'rating');

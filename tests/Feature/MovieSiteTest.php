@@ -25,18 +25,18 @@ class MovieSiteTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('Plan a film night')
-            ->assertSee('Midnight Runway');
+            ->assertSee('Inception');
     }
 
     public function test_catalogue_search_returns_filtered_html(): void
     {
-        $response = $this->getJson('/api/movies/search?q=signal');
+        $response = $this->getJson('/api/movies/search?q=inception');
 
         $response
             ->assertOk()
             ->assertJsonPath('count', 1);
 
-        $this->assertStringContainsString('Signal in the Rain', $response->json('html'));
+        $this->assertStringContainsString('Inception', $response->json('html'));
     }
 
     public function test_review_can_be_posted_with_ajax(): void
@@ -107,5 +107,55 @@ class MovieSiteTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('cinemas.0.name', 'Sample Cinema');
+    }
+
+    public function test_catalogue_search_can_import_omdb_results(): void
+    {
+        config()->set('services.omdb.key', 'test-key');
+
+        Http::fake([
+            'www.omdbapi.com/*' => function ($request) {
+                if ($request['s'] ?? false) {
+                    return Http::response([
+                        'Response' => 'True',
+                        'Search' => [
+                            [
+                                'Title' => 'The Matrix',
+                                'Year' => '1999',
+                                'imdbID' => 'tt0133093',
+                                'Type' => 'movie',
+                                'Poster' => 'https://example.com/matrix.jpg',
+                            ],
+                        ],
+                    ]);
+                }
+
+                return Http::response([
+                    'Response' => 'True',
+                    'Title' => 'The Matrix',
+                    'Year' => '1999',
+                    'Rated' => '15',
+                    'Runtime' => '136 min',
+                    'Genre' => 'Action, Sci-Fi',
+                    'Director' => 'Lana Wachowski, Lilly Wachowski',
+                    'Plot' => 'A computer hacker learns the world he knows is a simulation.',
+                    'Poster' => 'https://example.com/matrix.jpg',
+                    'Metascore' => '73',
+                    'imdbRating' => '8.7',
+                    'imdbID' => 'tt0133093',
+                ]);
+            },
+        ]);
+
+        $response = $this->getJson('/api/movies/search?q=matrix');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('count', 1);
+
+        $this->assertDatabaseHas('movies', [
+            'imdb_id' => 'tt0133093',
+            'title' => 'The Matrix',
+        ]);
     }
 }

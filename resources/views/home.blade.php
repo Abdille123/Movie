@@ -8,8 +8,8 @@
             <span class="eyebrow">Assessment-ready movie website</span>
             <h1>Plan a film night with live showtimes, nearby cinemas, and weather-aware travel.</h1>
             <p>
-                ReelRoute is a simple Laravel movie platform built around MVC, seeded cinema data, AJAX browsing,
-                responsive layouts, and browser-powered location features that make sense on mobile.
+                ReelRoute is a simple Laravel movie platform built around MVC, IMDb-linked movie syncing, local
+                MySQL showtimes and reviews, responsive layouts, and browser-powered location features.
             </p>
             <div class="hero-actions">
                 <a class="button button-primary" href="{{ route('movies.index') }}">Browse movies</a>
@@ -22,6 +22,7 @@
                 <h2>Why it scores well</h2>
                 <ul class="check-list">
                     <li>MVC architecture with migrations, models, controllers, views, and seed data.</li>
+                    <li>Featured titles can auto-refresh from IMDb-linked OMDb API results.</li>
                     <li>Two live integrations: nearby cinemas and cinema-trip weather.</li>
                     <li>Rich interactions: AJAX search, review posting, live shortlist updates.</li>
                     <li>Responsive layout built for laptop and phone widths.</li>

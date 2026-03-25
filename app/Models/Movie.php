@@ -9,22 +9,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Movie extends Model
 {
     protected $fillable = [
+        'imdb_id',
         'title',
         'slug',
         'tagline',
         'synopsis',
         'genre',
+        'director',
         'release_year',
         'runtime_minutes',
         'age_rating',
         'critic_score',
         'audience_score',
         'tone',
+        'poster_url',
+        'last_synced_at',
         'featured',
     ];
 
     protected $casts = [
         'featured' => 'boolean',
+        'last_synced_at' => 'datetime',
     ];
 
     public function reviews(): HasMany

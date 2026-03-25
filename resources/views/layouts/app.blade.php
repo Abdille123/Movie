@@ -42,10 +42,7 @@
                 @yield('content')
             </main>
 
-            <footer class="site-footer">
-                <p>Laravel MVC, database-backed showtimes, AJAX interactions, geolocation cinema finder, and weather support.</p>
-                <p>Built for coursework submission and easy deployment to a standard PHP/MySQL host.</p>
-            </footer>
+            <footer class="site-footer"></footer>
         </div>
 
         @stack('scripts')

@@ -5,12 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Movie;
 use App\Models\Review;
 use App\Models\Showtime;
+use App\Services\MovieSyncService;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
+    public function __construct(
+        private readonly MovieSyncService $movieSyncService,
+    ) {}
+
     public function __invoke(): View
     {
+        $this->movieSyncService->syncFeaturedMovies();
+
         $featuredMovies = Movie::query()
             ->with(['showtimes', 'reviews'])
             ->withCount('reviews')

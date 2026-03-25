@@ -1,8 +1,13 @@
 <article class="movie-card tone-{{ $movie->tone }}">
     <div class="movie-poster">
-        <span>{{ $movie->genre }}</span>
-        <strong>{{ $movie->title }}</strong>
-        <small>{{ $movie->release_year }}</small>
+        @if ($movie->poster_url)
+            <img class="movie-poster-image" src="{{ $movie->poster_url }}" alt="{{ $movie->title }} poster" referrerpolicy="no-referrer">
+        @endif
+        <div class="poster-content">
+            <span>{{ $movie->genre }}</span>
+            <strong>{{ $movie->title }}</strong>
+            <small>{{ $movie->release_year }}</small>
+        </div>
     </div>
 
     <div class="movie-copy">
@@ -14,6 +19,9 @@
 
         <h3>{{ $movie->title }}</h3>
         <p>{{ $movie->short_synopsis }}</p>
+        @if ($movie->director)
+            <p class="movie-source">IMDb-linked data · {{ $movie->director }}</p>
+        @endif
 
         <div class="movie-meta">
             <div>

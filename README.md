@@ -6,6 +6,7 @@ ReelRoute is a simple Laravel movie website built to meet the coursework rubric 
 
 - Laravel MVC structure with routes, controllers, Eloquent models, Blade views, migrations, and seeders.
 - Database-backed movie catalogue with showtimes and user reviews.
+- IMDb-linked movie importing through the OMDb API.
 - AJAX movie search and filtering without full page reloads.
 - AJAX review submission on movie detail pages.
 - Browser geolocation to find nearby cinemas on an interactive map.
@@ -17,6 +18,7 @@ ReelRoute is a simple Laravel movie website built to meet the coursework rubric 
 
 - Architectural pattern: Laravel MVC is used throughout, with movies, showtimes, and reviews stored in the database.
 - Third-party API: live weather data is fetched programmatically with Open-Meteo.
+- Third-party API: IMDb-linked movie data can be fetched from the OMDb REST API.
 - Mobile and hardware APIs: browser geolocation is used to find cinemas near the user and display them on a map.
 - RIA / AJAX: live catalogue search and review submission are both handled asynchronously.
 - Version control: the repository is intended to be developed and tracked in staged commits with issues, labels, and milestones.
@@ -25,6 +27,7 @@ ReelRoute is a simple Laravel movie website built to meet the coursework rubric 
 
 - Open-Meteo for weather forecasts.
 - Overpass / OpenStreetMap data for nearby cinema discovery.
+- OMDb for IMDb-linked movie search and movie details.
 - Browser Geolocation API for user location on mobile and desktop devices.
 
 ## Local Setup
@@ -42,6 +45,14 @@ php artisan serve
 
 Before running migrations, edit `.env` if your MySQL host, username, password, or database name differs from the defaults in `.env.example`.
 
+To enable automatic IMDb-linked importing, add your OMDb API key to `.env`:
+
+```bash
+OMDB_API_KEY=your_omdb_key
+```
+
+When the key is present, featured movies are refreshed automatically and search requests can import matching OMDb results into the local MySQL catalogue.
+
 For a university MySQL server, replace the local values with your own student database credentials.
 
 ## Development Commands
@@ -49,6 +60,7 @@ For a university MySQL server, replace the local values with your own student da
 ```bash
 php artisan test
 php artisan migrate:fresh --seed
+php artisan movies:sync-imdb
 npm run dev
 ```
 
