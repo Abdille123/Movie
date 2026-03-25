@@ -16,7 +16,7 @@
         </div>
 
         <form class="filters-card" data-catalogue-form action="{{ route('api.movies.search') }}" method="get">
-            <div class="field-group">
+            <div class="field-group search-stack">
                 <label for="search">Search movies</label>
                 <input id="search" name="q" type="search" placeholder="Search by title, genre or IMDb ID" autocomplete="off">
                 <div class="suggestions-list" data-suggestions></div>

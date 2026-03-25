@@ -192,27 +192,55 @@ function initCatalogueSearch() {
     const grid = document.querySelector('[data-movie-grid]');
     const count = document.querySelector('[data-results-count]');
     const suggestions = document.querySelector('[data-suggestions]');
+    const searchField = form.querySelector('[name="q"]');
     const endpoint = form.action;
     const fields = form.querySelectorAll('input, select');
     let timeoutId = null;
+    let requestId = 0;
+
+    const clearSuggestions = () => {
+        suggestions.replaceChildren();
+    };
+
+    const renderSuggestions = (items) => {
+        clearSuggestions();
+
+        if (!items.length) {
+            return;
+        }
+
+        items.forEach((item) => {
+            const link = document.createElement('a');
+            link.className = 'suggestion-link';
+            link.href = item.url;
+            link.textContent = item.title;
+            suggestions.append(link);
+        });
+    };
 
     const runSearch = async () => {
+        const activeRequestId = ++requestId;
         const params = new URLSearchParams(new FormData(form));
         const response = await fetch(`${endpoint}?${params.toString()}`, {
             headers: { Accept: 'application/json' },
         });
         const payload = await response.json();
 
+        if (activeRequestId !== requestId) {
+            return;
+        }
+
         grid.innerHTML = payload.html;
         count.textContent = String(payload.count);
         bindPlannerButtons(grid);
 
-        const query = String(form.querySelector('[name="q"]').value || '').trim();
-        suggestions.innerHTML = query.length > 1
-            ? payload.suggestions
-                .map((item) => `<a class="suggestion-link" href="${item.url}">${item.title}</a>`)
-                .join('')
-            : '';
+        const query = String(searchField?.value || '').trim();
+        if (query.length > 1) {
+            renderSuggestions(Array.isArray(payload.suggestions) ? payload.suggestions : []);
+            return;
+        }
+
+        clearSuggestions();
     };
 
     form.addEventListener('submit', async (event) => {
@@ -222,11 +250,34 @@ function initCatalogueSearch() {
 
     fields.forEach((field) => {
         field.addEventListener('input', () => {
+            if (field === searchField && String(searchField.value || '').trim().length < 2) {
+                clearSuggestions();
+            }
+
             window.clearTimeout(timeoutId);
             timeoutId = window.setTimeout(runSearch, 220);
         });
 
         field.addEventListener('change', runSearch);
+    });
+
+    searchField?.addEventListener('focus', async () => {
+        if (String(searchField.value || '').trim().length > 1 && !suggestions.children.length) {
+            await runSearch();
+        }
+    });
+
+    searchField?.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            clearSuggestions();
+            searchField.blur();
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!form.contains(event.target)) {
+            clearSuggestions();
+        }
     });
 }
 

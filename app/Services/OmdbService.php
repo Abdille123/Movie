@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 
 class OmdbService
@@ -17,14 +18,18 @@ class OmdbService
             return null;
         }
 
-        $response = Http::acceptJson()
-            ->timeout(12)
-            ->get(config('services.omdb.url'), [
-                'apikey' => config('services.omdb.key'),
-                'i' => $imdbId,
-                'type' => 'movie',
-                'plot' => 'short',
-            ]);
+        try {
+            $response = Http::acceptJson()
+                ->timeout(12)
+                ->get(config('services.omdb.url'), [
+                    'apikey' => config('services.omdb.key'),
+                    'i' => $imdbId,
+                    'type' => 'movie',
+                    'plot' => 'short',
+                ]);
+        } catch (ConnectionException) {
+            return null;
+        }
 
         if ($response->failed() || $response->json('Response') === 'False') {
             return null;
@@ -39,14 +44,18 @@ class OmdbService
             return [];
         }
 
-        $response = Http::acceptJson()
-            ->timeout(12)
-            ->get(config('services.omdb.url'), [
-                'apikey' => config('services.omdb.key'),
-                's' => $query,
-                'type' => 'movie',
-                'page' => $page,
-            ]);
+        try {
+            $response = Http::acceptJson()
+                ->timeout(12)
+                ->get(config('services.omdb.url'), [
+                    'apikey' => config('services.omdb.key'),
+                    's' => $query,
+                    'type' => 'movie',
+                    'page' => $page,
+                ]);
+        } catch (ConnectionException) {
+            return [];
+        }
 
         if ($response->failed() || $response->json('Response') === 'False') {
             return [];
