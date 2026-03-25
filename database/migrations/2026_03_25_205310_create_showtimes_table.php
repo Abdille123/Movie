@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('showtimes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('movie_id')->constrained()->cascadeOnDelete();
+            $table->string('venue_name');
+            $table->string('city');
+            $table->dateTime('starts_at');
+            $table->string('screen_format', 24);
+            $table->unsignedInteger('available_seats');
+            $table->decimal('ticket_price', 5, 2);
             $table->timestamps();
         });
     }

@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('movie_id')->constrained()->cascadeOnDelete();
+            $table->string('author_name');
+            $table->unsignedTinyInteger('rating');
+            $table->text('comment');
+            $table->string('favourite_scene')->nullable();
+            $table->boolean('would_rewatch')->default(true);
             $table->timestamps();
         });
     }
