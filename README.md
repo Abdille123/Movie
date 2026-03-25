@@ -32,6 +32,7 @@ ReelRoute is a simple Laravel movie website built to meet the coursework rubric 
 ```bash
 composer install
 cp .env.example .env
+mysql -u root -p -e "CREATE DATABASE reelroute CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 php artisan key:generate
 php artisan migrate:fresh --seed
 npm install
@@ -39,7 +40,9 @@ npm run build
 php artisan serve
 ```
 
-Open the local Laravel address shown by `php artisan serve`.
+Before running migrations, edit `.env` if your MySQL host, username, password, or database name differs from the defaults in `.env.example`.
+
+For a university MySQL server, replace the local values with your own student database credentials.
 
 ## Development Commands
 
@@ -51,8 +54,9 @@ npm run dev
 
 ## Deployment Notes
 
-- The current local setup uses SQLite for convenience.
-- The migrations are MySQL-friendly, so the project can be moved to a standard PHP/MySQL student server by changing the database values in `.env`.
+- The application is configured for MySQL by default.
+- Create the target MySQL database first, then set the production `.env` values and run the migrations.
+- The migrations are compatible with a standard PHP/MySQL student server.
 - Build the frontend with `npm run build` before deployment.
 
 ## Assets
