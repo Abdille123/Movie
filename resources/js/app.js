@@ -6,6 +6,7 @@ const locationStorageKey = 'reelroute-last-location';
 document.addEventListener('DOMContentLoaded', () => {
     bindPlannerButtons(document);
     updatePlannerUi();
+    initHeaderWeather();
     initCatalogueSearch();
     initReviewForm();
     initTripTools();
@@ -22,6 +23,20 @@ function plannerItems() {
 function savePlanner(items) {
     localStorage.setItem(plannerStorageKey, JSON.stringify(items));
     updatePlannerUi();
+}
+
+function savedLocation() {
+    try {
+        const value = localStorage.getItem(locationStorageKey);
+
+        return value ? JSON.parse(value) : null;
+    } catch {
+        return null;
+    }
+}
+
+function storeLocation(coords) {
+    localStorage.setItem(locationStorageKey, JSON.stringify(coords));
 }
 
 function bindPlannerButtons(root) {
@@ -88,6 +103,85 @@ function updatePlannerUi() {
     });
 }
 
+function setHeaderWeather({
+    label = 'Weather',
+    headline = 'Set location',
+    meta = 'Use the movies page to load your local forecast.',
+} = {}) {
+    const labelNode = document.querySelector('[data-header-weather-label]');
+    const tempNode = document.querySelector('[data-header-weather-temp]');
+    const metaNode = document.querySelector('[data-header-weather-meta]');
+
+    if (!labelNode || !tempNode || !metaNode) {
+        return;
+    }
+
+    labelNode.textContent = label;
+    tempNode.textContent = headline;
+    metaNode.textContent = meta;
+}
+
+async function fetchWeather(coords) {
+    const response = await fetch(`/api/weather?lat=${coords.lat}&lng=${coords.lng}`, {
+        headers: { Accept: 'application/json' },
+    });
+
+    return response.json();
+}
+
+async function fetchCinemas(coords) {
+    const response = await fetch(`/api/cinemas/nearby?lat=${coords.lat}&lng=${coords.lng}`, {
+        headers: { Accept: 'application/json' },
+    });
+
+    return response.json();
+}
+
+function renderWeatherInHeader(payload) {
+    if (payload.temperature === undefined) {
+        setHeaderWeather({
+            headline: payload.summary ?? 'Weather unavailable',
+            meta: payload.advice ?? 'Unable to load forecast for the saved location.',
+        });
+
+        return;
+    }
+
+    setHeaderWeather({
+        label: payload.summary ?? 'Weather',
+        headline: `${payload.temperature}\u00b0C`,
+        meta: `${payload.rain_chance}% rain \u00b7 ${payload.wind_speed} km/h wind`,
+    });
+}
+
+async function refreshHeaderWeather(coords) {
+    try {
+        const payload = await fetchWeather(coords);
+        renderWeatherInHeader(payload);
+    } catch {
+        setHeaderWeather({
+            headline: 'Weather unavailable',
+            meta: 'Forecast could not be loaded for the saved location.',
+        });
+    }
+}
+
+function initHeaderWeather() {
+    const coords = savedLocation();
+
+    if (!coords) {
+        setHeaderWeather();
+        return;
+    }
+
+    setHeaderWeather({
+        headline: 'Loading...',
+        meta: 'Refreshing forecast for your saved location.',
+    });
+
+    refreshHeaderWeather(coords);
+}
+
 function initCatalogueSearch() {
     const form = document.querySelector('[data-catalogue-form]');
 
@@ -120,6 +214,11 @@ function initCatalogueSearch() {
                 .join('')
             : '';
     };
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        await runSearch();
+    });
 
     fields.forEach((field) => {
         field.addEventListener('input', () => {
@@ -181,7 +280,6 @@ function initTripTools() {
 
     const button = wrapper.querySelector('[data-locate-button]');
     const status = wrapper.querySelector('[data-location-status]');
-    const weatherPanel = wrapper.querySelector('[data-weather-panel]');
     const cinemaList = wrapper.querySelector('[data-cinema-list]');
     const mapNode = wrapper.querySelector('[data-map]');
     let map = null;
@@ -216,19 +314,6 @@ function initTripTools() {
         map.setView([origin.lat, origin.lng], 12);
     };
 
-    const renderWeather = (payload) => {
-        weatherPanel.innerHTML = `
-            <span class="eyebrow">Weather API</span>
-            <h2>${payload.summary}</h2>
-            <p>${payload.advice}</p>
-            <div class="movie-scores">
-                ${payload.temperature !== undefined ? `<span>${payload.temperature}&deg;C</span>` : ''}
-                ${payload.rain_chance !== undefined ? `<span>${payload.rain_chance}% rain</span>` : ''}
-                ${payload.wind_speed !== undefined ? `<span>${payload.wind_speed} km/h wind</span>` : ''}
-            </div>
-        `;
-    };
-
     const renderCinemas = (cinemas) => {
         cinemaList.innerHTML = cinemas.length
             ? cinemas
@@ -249,20 +334,25 @@ function initTripTools() {
 
     const loadData = async (coords, label = 'Saved location loaded.') => {
         status.textContent = 'Loading nearby cinemas and weather...';
-        localStorage.setItem(locationStorageKey, JSON.stringify(coords));
+        storeLocation(coords);
 
-        const [cinemaResponse, weatherResponse] = await Promise.all([
-            fetch(`/api/cinemas/nearby?lat=${coords.lat}&lng=${coords.lng}`, { headers: { Accept: 'application/json' } }),
-            fetch(`/api/weather?lat=${coords.lat}&lng=${coords.lng}`, { headers: { Accept: 'application/json' } }),
-        ]);
+        try {
+            const [cinemaPayload, weatherPayload] = await Promise.all([
+                fetchCinemas(coords),
+                fetchWeather(coords),
+            ]);
 
-        const cinemaPayload = await cinemaResponse.json();
-        const weatherPayload = await weatherResponse.json();
-
-        renderCinemas(cinemaPayload.cinemas ?? []);
-        renderWeather(weatherPayload);
-        renderMap(coords, cinemaPayload.cinemas ?? []);
-        status.textContent = label;
+            renderCinemas(cinemaPayload.cinemas ?? []);
+            renderMap(coords, cinemaPayload.cinemas ?? []);
+            renderWeatherInHeader(weatherPayload);
+            status.textContent = label;
+        } catch {
+            status.textContent = 'Could not load cinema and weather data for this location.';
+            setHeaderWeather({
+                headline: 'Weather unavailable',
+                meta: 'Forecast could not be loaded for the selected location.',
+            });
+        }
     };
 
     button.addEventListener('click', () => {
@@ -288,13 +378,9 @@ function initTripTools() {
         );
     });
 
-    const savedLocation = localStorage.getItem(locationStorageKey);
+    const coords = savedLocation();
 
-    if (savedLocation) {
-        try {
-            loadData(JSON.parse(savedLocation));
-        } catch {
-            localStorage.removeItem(locationStorageKey);
-        }
+    if (coords) {
+        loadData(coords);
     }
 }

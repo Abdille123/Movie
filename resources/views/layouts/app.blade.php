@@ -15,22 +15,32 @@
     <body>
         <div class="site-shell">
             <header class="site-header">
-                <a class="brand" href="{{ route('home') }}">
-                    <span class="brand-mark">RR</span>
-                    <span>
-                        <strong>ReelRoute</strong>
-                        <small>Movie night planner</small>
-                    </span>
-                </a>
+                <div class="header-main">
+                    <a class="brand" href="{{ route('home') }}">
+                        <span class="brand-mark">RR</span>
+                        <span>
+                            <strong>ReelRoute</strong>
+                            <small>Movie night planner</small>
+                        </span>
+                    </a>
 
-                <nav class="site-nav">
-                    <a href="{{ route('home') }}" @class(['is-active' => request()->routeIs('home')])>Home</a>
-                    <a href="{{ route('movies.index') }}" @class(['is-active' => request()->routeIs('movies.*')])>Movies</a>
-                </nav>
+                    <nav class="site-nav">
+                        <a href="{{ route('home') }}" @class(['is-active' => request()->routeIs('home')])>Home</a>
+                        <a href="{{ route('movies.index') }}" @class(['is-active' => request()->routeIs('movies.*')])>Movies</a>
+                    </nav>
+                </div>
 
-                <div class="planner-pill">
-                    <span>Shortlist</span>
-                    <strong data-planner-count>0</strong>
+                <div class="header-tools">
+                    <div class="weather-pill" data-header-weather>
+                        <span data-header-weather-label>Weather</span>
+                        <strong data-header-weather-temp>Set location</strong>
+                        <small data-header-weather-meta>Use the movies page to load your local forecast.</small>
+                    </div>
+
+                    <div class="planner-pill">
+                        <span>Shortlist</span>
+                        <strong data-planner-count>0</strong>
+                    </div>
                 </div>
             </header>
 
@@ -41,8 +51,6 @@
             <main class="page-frame">
                 @yield('content')
             </main>
-
-            <footer class="site-footer"></footer>
         </div>
 
         @stack('scripts')

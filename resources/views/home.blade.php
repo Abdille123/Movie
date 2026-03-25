@@ -3,59 +3,47 @@
 @section('title', 'ReelRoute | Home')
 
 @section('content')
-    <section class="hero-panel">
-        <div class="hero-copy">
-            <span class="eyebrow">Assessment-ready movie website</span>
+    <section class="section-block simple-hero">
+        <div class="simple-hero-copy">
             <h1>Plan a film night with live showtimes, nearby cinemas, and weather-aware travel.</h1>
-            <p>
-                ReelRoute is a simple Laravel movie platform built around MVC, IMDb-linked movie syncing, local
-                MySQL showtimes and reviews, responsive layouts, and browser-powered location features.
-            </p>
+            <p>Pick a title, save it to your shortlist, then head to the movies page to search and plan around your location.</p>
             <div class="hero-actions">
                 <a class="button button-primary" href="{{ route('movies.index') }}">Browse movies</a>
                 <a class="button button-secondary" href="{{ route('movies.index') }}#trip-tools">Find cinemas near me</a>
             </div>
         </div>
-
-        <div class="hero-stack">
-            <article class="highlight-card">
-                <h2>Why it scores well</h2>
-                <ul class="check-list">
-                    <li>MVC architecture with migrations, models, controllers, views, and seed data.</li>
-                    <li>Featured titles can auto-refresh from IMDb-linked OMDb API results.</li>
-                    <li>Two live integrations: nearby cinemas and cinema-trip weather.</li>
-                    <li>Rich interactions: AJAX search, review posting, live shortlist updates.</li>
-                    <li>Responsive layout built for laptop and phone widths.</li>
-                </ul>
-            </article>
-
-            <article class="planner-card">
-                <h2>Tonight's shortlist</h2>
-                <p>Use the add buttons across the site to store films in the browser for quick comparison.</p>
-                <div class="planner-list" data-planner-list>
-                    <p class="planner-empty">No films saved yet.</p>
-                </div>
-            </article>
-        </div>
     </section>
 
-    <section class="stats-grid">
-        <article class="stat-card">
-            <span>Movies</span>
-            <strong>{{ $stats['movies'] }}</strong>
+    <section class="dashboard-grid">
+        <article class="section-block">
+            <div class="section-heading">
+                <div>
+                    <h2>Tonight's shortlist</h2>
+                </div>
+            </div>
+            <div class="planner-list" data-planner-list>
+                <p class="planner-empty">No films saved yet.</p>
+            </div>
         </article>
-        <article class="stat-card">
-            <span>Showtimes</span>
-            <strong>{{ $stats['showtimes'] }}</strong>
-        </article>
-        <article class="stat-card">
-            <span>Reviews</span>
-            <strong>{{ $stats['reviews'] }}</strong>
-        </article>
-        <article class="stat-card">
-            <span>Genres</span>
-            <strong>{{ $stats['genres'] }}</strong>
-        </article>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span>Movies</span>
+                <strong>{{ $stats['movies'] }}</strong>
+            </article>
+            <article class="stat-card">
+                <span>Showtimes</span>
+                <strong>{{ $stats['showtimes'] }}</strong>
+            </article>
+            <article class="stat-card">
+                <span>Reviews</span>
+                <strong>{{ $stats['reviews'] }}</strong>
+            </article>
+            <article class="stat-card">
+                <span>Genres</span>
+                <strong>{{ $stats['genres'] }}</strong>
+            </article>
+        </section>
     </section>
 
     <section class="section-block">
