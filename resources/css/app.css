@@ -715,7 +715,22 @@ h3 {
 
 @media (max-width: 720px) {
     .site-shell {
-        width: min(100vw - 1rem, 100%);
+        width: min(96vw, 100%);
+        padding: 0.75rem 0 1.5rem;
+    }
+
+    .site-header,
+    .flash-banner,
+    .page-frame > .section-block,
+    .page-frame > .detail-hero,
+    .page-frame > .detail-layout {
+        width: min(92vw, 34rem);
+        margin-inline: auto;
+    }
+
+    .page-frame {
+        gap: 0.9rem;
+        justify-items: center;
     }
 
     .movie-grid,
@@ -732,7 +747,7 @@ h3 {
     .detail-hero,
     .filters-card,
     .tool-card {
-        padding: 1rem;
+        padding: 0.9rem;
     }
 
     .site-header {
@@ -799,6 +814,8 @@ h3 {
     .section-heading {
         align-items: start;
         flex-direction: column;
+        gap: 0.45rem;
+        margin-bottom: 0.75rem;
     }
 
     .header-tools {
@@ -829,6 +846,86 @@ h3 {
         font-size: 0.95rem;
     }
 
+    .simple-hero h1,
+    .catalogue-header h1,
+    .detail-copy h1 {
+        font-size: clamp(1.7rem, 7vw, 2.15rem);
+    }
+
+    .section-heading h2 {
+        font-size: clamp(1.2rem, 5vw, 1.55rem);
+    }
+
+    .simple-hero p,
+    .detail-copy p {
+        font-size: 0.96rem;
+        line-height: 1.55;
+    }
+
+    .button {
+        min-height: 2.65rem;
+        padding: 0.72rem 0.95rem;
+    }
+
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+        padding: 0.78rem 0.9rem;
+    }
+
+    .movie-grid {
+        justify-items: center;
+        gap: 0.85rem;
+    }
+
+    .movie-card {
+        width: min(100%, 21.5rem);
+    }
+
+    .movie-poster {
+        min-height: 13.5rem;
+        padding: 1rem;
+    }
+
+    .movie-copy {
+        padding: 1rem;
+    }
+
+    .movie-meta,
+    .review-head,
+    .review-foot {
+        gap: 0.55rem;
+    }
+
+    .detail-poster {
+        min-height: 17rem;
+        padding: 1rem;
+    }
+
+    .camera-frame,
+    .camera-preview,
+    .camera-shot,
+    .camera-empty {
+        min-height: 14rem;
+        height: 14rem;
+    }
+
+    .stat-card {
+        padding: 0.9rem 1rem;
+    }
+
+    .stat-card strong {
+        font-size: 1.55rem;
+    }
+
+    .planner-item,
+    .timeline-item,
+    .cinema-item,
+    .review-card,
+    .empty-state {
+        padding: 0.85rem 0.9rem;
+    }
+
     .planner-pill {
         justify-content: center;
     }
@@ -841,6 +938,14 @@ h3 {
 @media (max-width: 460px) {
     .site-header {
         padding: 0.85rem;
+    }
+
+    .site-header,
+    .flash-banner,
+    .page-frame > .section-block,
+    .page-frame > .detail-hero,
+    .page-frame > .detail-layout {
+        width: min(94vw, 30rem);
     }
 
     .brand strong {
@@ -858,5 +963,17 @@ h3 {
 
     .planner-pill {
         width: 100%;
+    }
+
+    .movie-card {
+        width: min(100%, 20rem);
+    }
+
+    .camera-frame,
+    .camera-preview,
+    .camera-shot,
+    .camera-empty {
+        min-height: 12.5rem;
+        height: 12.5rem;
     }
 }
