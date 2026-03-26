@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <p class="results-note">AJAX search is always on. Showing <strong data-results-count>{{ $movies->count() }}</strong> movies.</p>
+            <p class="results-note"><span data-search-feedback>AJAX search is always on.</span> Showing <strong data-results-count>{{ $movies->count() }}</strong> movies.</p>
         </form>
 
         {{-- Live location tools on the left and the shortlist on the right --}}

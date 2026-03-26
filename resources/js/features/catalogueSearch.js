@@ -11,12 +11,19 @@ export function initCatalogueSearch() {
 
     const grid = document.querySelector('[data-movie-grid]');
     const count = document.querySelector('[data-results-count]');
+    const searchFeedback = document.querySelector('[data-search-feedback]');
     const suggestions = document.querySelector('[data-suggestions]');
     const searchField = form.querySelector('[name="q"]');
     const endpoint = form.action;
     const fields = form.querySelectorAll('input, select');
     let timeoutId = null;
     let requestId = 0;
+
+    const setSearchFeedback = (message = 'AJAX search is always on.') => {
+        if (searchFeedback) {
+            searchFeedback.textContent = message;
+        }
+    };
 
     // Remove any open suggestion links.
     const clearSuggestions = () => {
@@ -44,23 +51,38 @@ export function initCatalogueSearch() {
     const runSearch = async () => {
         const activeRequestId = ++requestId;
         const params = new URLSearchParams(new FormData(form));
-        const { data: payload } = await fetchJson(`${endpoint}?${params.toString()}`);
+        try {
+            const { response, data: payload } = await fetchJson(`${endpoint}?${params.toString()}`);
 
-        if (activeRequestId !== requestId) {
+            if (activeRequestId !== requestId) {
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error('Search request failed');
+            }
+
+            grid.innerHTML = payload.html;
+            count.textContent = String(payload.count);
+            bindPlannerButtons(grid);
+            setSearchFeedback();
+
+            const query = String(searchField?.value || '').trim();
+            if (query.length > 1) {
+                renderSuggestions(Array.isArray(payload.suggestions) ? payload.suggestions : []);
+                return;
+            }
+
+            clearSuggestions();
+        } catch {
+            if (activeRequestId !== requestId) {
+                return;
+            }
+
+            clearSuggestions();
+            setSearchFeedback('Search could not update right now. Showing the last loaded results.');
             return;
         }
-
-        grid.innerHTML = payload.html;
-        count.textContent = String(payload.count);
-        bindPlannerButtons(grid);
-
-        const query = String(searchField?.value || '').trim();
-        if (query.length > 1) {
-            renderSuggestions(Array.isArray(payload.suggestions) ? payload.suggestions : []);
-            return;
-        }
-
-        clearSuggestions();
     };
 
     // Keep search results on the page without a full reload.
