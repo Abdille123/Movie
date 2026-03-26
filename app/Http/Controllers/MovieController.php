@@ -20,21 +20,13 @@ class MovieController extends Controller
      */
     public function index(): View
     {
-        $this->movieSyncService->syncFeaturedMovies();
-
         $movies = Movie::query()
-            ->with(['showtimes', 'reviews'])
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating')
+            ->cardData()
             ->orderByDesc('featured')
-            ->orderByDesc('critic_score')
+            ->catalogueSort()
             ->get();
 
-        $genres = Movie::query()
-            ->orderBy('genre')
-            ->pluck('genre')
-            ->unique()
-            ->values();
+        $genres = Movie::genreOptions();
 
         return view('movies.index', compact('movies', 'genres'));
     }
@@ -51,9 +43,7 @@ class MovieController extends Controller
             ->loadAvg('reviews', 'rating');
 
         $relatedMovies = Movie::query()
-            ->with(['showtimes', 'reviews'])
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating')
+            ->cardData()
             ->whereKeyNot($movie->getKey())
             ->where('genre', $movie->genre)
             ->take(3)

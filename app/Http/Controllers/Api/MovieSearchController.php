@@ -23,37 +23,19 @@ class MovieSearchController extends Controller
     public function index(Request $request): JsonResponse
     {
         $search = trim((string) $request->string('q'));
+        $genre = $request->string('genre')->toString();
+        $sort = $request->string('sort')->toString();
 
         if ($search !== '') {
             $this->movieSyncService->syncSearchResults($search);
         }
 
-        $query = Movie::query()
-            ->with(['showtimes', 'reviews'])
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating');
-
-        if ($search !== '') {
-            $query->where(function ($builder) use ($search): void {
-                $builder
-                    ->where('title', 'like', "%{$search}%")
-                    ->orWhere('imdb_id', 'like', "%{$search}%")
-                    ->orWhere('tagline', 'like', "%{$search}%")
-                    ->orWhere('genre', 'like', "%{$search}%");
-            });
-        }
-
-        if ($genre = $request->string('genre')->toString()) {
-            $query->where('genre', $genre);
-        }
-
-        match ($request->string('sort')->toString()) {
-            'title' => $query->orderBy('title'),
-            'release' => $query->orderByDesc('release_year'),
-            default => $query->orderByDesc('critic_score'),
-        };
-
-        $movies = $query->get();
+        $movies = Movie::query()
+            ->cardData()
+            ->searchTerm($search)
+            ->genreFilter($genre)
+            ->catalogueSort($sort)
+            ->get();
 
         return response()->json([
             'count' => $movies->count(),

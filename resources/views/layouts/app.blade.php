@@ -17,7 +17,7 @@
             {{-- Main site header with navigation, weather, and shortlist count --}}
             <header class="site-header">
                 <div class="header-main">
-                    <a class="brand" href="{{ route('home') }}">
+                    <a class="brand" href="{{ route('movies.index') }}">
                         <span class="brand-mark">RR</span>
                         <span>
                             <strong>ReelRoute</strong>
@@ -26,7 +26,6 @@
                     </a>
 
                     <nav class="site-nav">
-                        <a href="{{ route('home') }}" @class(['is-active' => request()->routeIs('home')])>Home</a>
                         <a href="{{ route('movies.index') }}" @class(['is-active' => request()->routeIs('movies.*')])>Movies</a>
                     </nav>
                 </div>

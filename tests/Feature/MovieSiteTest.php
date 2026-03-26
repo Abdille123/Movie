@@ -25,15 +25,24 @@ class MovieSiteTest extends TestCase
     }
 
     /**
-     * Make sure the home page loads and shows sample content.
+     * Make sure the root URL now points users to the movies page.
      */
-    public function test_home_page_loads_seeded_content(): void
+    public function test_home_route_redirects_to_movies_page(): void
     {
-        $response = $this->get('/');
+        $this->get('/')
+            ->assertRedirect(route('movies.index'));
+    }
+
+    /**
+     * Make sure the main movies page loads and shows sample content.
+     */
+    public function test_movies_page_loads_seeded_content(): void
+    {
+        $response = $this->get(route('movies.index'));
 
         $response
             ->assertOk()
-            ->assertSee('Plan a film night')
+            ->assertSee('Browse movies and plan your next cinema trip.')
             ->assertSee('Inception');
     }
 
