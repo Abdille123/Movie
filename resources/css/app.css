@@ -117,6 +117,11 @@ img {
     gap: 0.9rem;
 }
 
+.brand-copy {
+    display: grid;
+    gap: 0.1rem;
+}
+
 .brand strong,
 h1,
 h2,
@@ -664,22 +669,106 @@ h3 {
         padding: 1rem;
     }
 
+    .site-header {
+        gap: 0.75rem;
+        top: 0.5rem;
+    }
+
+    .header-main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        flex-wrap: nowrap;
+    }
+
+    .brand {
+        gap: 0.65rem;
+        min-width: 0;
+    }
+
+    .brand-mark {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.85rem;
+        flex-shrink: 0;
+    }
+
+    .brand-copy small,
+    .weather-pill small {
+        display: none;
+    }
+
+    .brand strong {
+        font-size: 1.05rem;
+    }
+
+    .site-nav {
+        padding: 0.2rem;
+        flex-shrink: 0;
+    }
+
+    .site-nav a {
+        padding: 0.55rem 0.75rem;
+        font-size: 0.92rem;
+    }
+
     .section-heading {
         align-items: start;
         flex-direction: column;
     }
 
     .header-tools {
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
         align-items: stretch;
+        gap: 0.6rem;
     }
 
     .weather-pill,
     .planner-pill {
-        width: 100%;
+        width: auto;
+        min-height: 0;
+        padding: 0.55rem 0.75rem;
+    }
+
+    .weather-pill {
+        min-width: 0;
+    }
+
+    .weather-pill span,
+    .planner-pill span {
+        font-size: 0.72rem;
+    }
+
+    .weather-pill strong,
+    .planner-pill strong {
+        font-size: 0.95rem;
+    }
+
+    .planner-pill {
+        justify-content: center;
     }
 
     .checkbox-field {
         padding-top: 0.25rem;
+    }
+}
+
+@media (max-width: 460px) {
+    .site-header {
+        padding: 0.85rem;
+    }
+
+    .brand strong {
+        font-size: 0.98rem;
+    }
+
+    .header-tools {
+        grid-template-columns: 1fr;
+    }
+
+    .planner-pill {
+        width: 100%;
     }
 }

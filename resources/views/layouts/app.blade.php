@@ -19,7 +19,7 @@
                 <div class="header-main">
                     <a class="brand" href="{{ route('movies.index') }}">
                         <span class="brand-mark">RR</span>
-                        <span>
+                        <span class="brand-copy">
                             <strong>ReelRoute</strong>
                             <small>Movie night planner</small>
                         </span>
