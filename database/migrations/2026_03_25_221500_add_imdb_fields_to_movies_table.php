@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Add extra fields used for OMDb and IMDb-linked movie data.
+     */
     public function up(): void
     {
         Schema::table('movies', function (Blueprint $table): void {
@@ -16,6 +19,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Remove the OMDb and IMDb-linked fields again.
+     */
     public function down(): void
     {
         Schema::table('movies', function (Blueprint $table): void {

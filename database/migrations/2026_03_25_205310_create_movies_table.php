@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Create the main movies table.
      */
     public function up(): void
     {
@@ -30,7 +30,7 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * Remove the movies table.
      */
     public function down(): void
     {

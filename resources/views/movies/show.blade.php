@@ -3,6 +3,7 @@
 @section('title', "ReelRoute | {$movie->title}")
 
 @section('content')
+    {{-- Large hero area with the main movie details --}}
     <section class="detail-hero tone-{{ $movie->tone }}">
         <div class="detail-poster">
             @if ($movie->poster_url)
@@ -48,6 +49,7 @@
         </div>
     </section>
 
+    {{-- Showtimes on the left and review summary on the right --}}
     <section class="detail-layout">
         <div class="section-block">
             <div class="section-heading">
@@ -85,6 +87,7 @@
         </aside>
     </section>
 
+    {{-- AJAX review form and the list of saved reviews --}}
     <section class="detail-layout" id="reviews">
         <div class="section-block">
             <div class="section-heading">
@@ -143,6 +146,7 @@
         </aside>
     </section>
 
+    {{-- Related movies from the same genre --}}
     <section class="section-block">
         <div class="section-heading">
             <div>

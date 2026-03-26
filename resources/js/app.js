@@ -1,8 +1,10 @@
 import './bootstrap';
 
+// These keys save shortlist and location data in the browser.
 const plannerStorageKey = 'reelroute-shortlist';
 const locationStorageKey = 'reelroute-last-location';
 
+// Start all browser features after the page has loaded.
 document.addEventListener('DOMContentLoaded', () => {
     bindPlannerButtons(document);
     updatePlannerUi();
@@ -12,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTripTools();
 });
 
+// Read the saved shortlist from local storage.
 function plannerItems() {
     try {
         return JSON.parse(localStorage.getItem(plannerStorageKey) ?? '[]');
@@ -20,11 +23,13 @@ function plannerItems() {
     }
 }
 
+// Save the shortlist and refresh the page widgets that use it.
 function savePlanner(items) {
     localStorage.setItem(plannerStorageKey, JSON.stringify(items));
     updatePlannerUi();
 }
 
+// Read the last saved map location from local storage.
 function savedLocation() {
     try {
         const value = localStorage.getItem(locationStorageKey);
@@ -35,10 +40,12 @@ function savedLocation() {
     }
 }
 
+// Save the user's chosen map location for later visits.
 function storeLocation(coords) {
     localStorage.setItem(locationStorageKey, JSON.stringify(coords));
 }
 
+// Wire up shortlist buttons on movie cards and detail pages.
 function bindPlannerButtons(root) {
     root.querySelectorAll('[data-plan-button]').forEach((button) => {
         if (button.dataset.bound === 'true') {
@@ -64,6 +71,7 @@ function bindPlannerButtons(root) {
     });
 }
 
+// Update shortlist counts, labels, and saved item lists.
 function updatePlannerUi() {
     const items = plannerItems();
 
@@ -103,6 +111,7 @@ function updatePlannerUi() {
     });
 }
 
+// Write the latest weather text into the header bar.
 function setHeaderWeather({
     label = 'Weather',
     headline = 'Set location',
@@ -121,6 +130,7 @@ function setHeaderWeather({
     metaNode.textContent = meta;
 }
 
+// Ask the Laravel weather API for forecast data.
 async function fetchWeather(coords) {
     const response = await fetch(`/api/weather?lat=${coords.lat}&lng=${coords.lng}`, {
         headers: { Accept: 'application/json' },
@@ -129,6 +139,7 @@ async function fetchWeather(coords) {
     return response.json();
 }
 
+// Ask the Laravel cinema API for nearby cinema data.
 async function fetchCinemas(coords) {
     const response = await fetch(`/api/cinemas/nearby?lat=${coords.lat}&lng=${coords.lng}`, {
         headers: { Accept: 'application/json' },
@@ -137,6 +148,7 @@ async function fetchCinemas(coords) {
     return response.json();
 }
 
+// Turn weather API data into the simple header display.
 function renderWeatherInHeader(payload) {
     if (payload.temperature === undefined) {
         setHeaderWeather({
@@ -154,6 +166,7 @@ function renderWeatherInHeader(payload) {
     });
 }
 
+// Load fresh weather data for the saved location.
 async function refreshHeaderWeather(coords) {
     try {
         const payload = await fetchWeather(coords);
@@ -166,6 +179,7 @@ async function refreshHeaderWeather(coords) {
     }
 }
 
+// Start the header weather widget on page load.
 function initHeaderWeather() {
     const coords = savedLocation();
 
@@ -182,6 +196,7 @@ function initHeaderWeather() {
     refreshHeaderWeather(coords);
 }
 
+// Run the AJAX movie search and its suggestion dropdown.
 function initCatalogueSearch() {
     const form = document.querySelector('[data-catalogue-form]');
 
@@ -198,10 +213,12 @@ function initCatalogueSearch() {
     let timeoutId = null;
     let requestId = 0;
 
+    // Remove any open suggestion links.
     const clearSuggestions = () => {
         suggestions.replaceChildren();
     };
 
+    // Show the latest suggestion links under the search box.
     const renderSuggestions = (items) => {
         clearSuggestions();
 
@@ -218,6 +235,7 @@ function initCatalogueSearch() {
         });
     };
 
+    // Fetch filtered movies and replace the movie grid.
     const runSearch = async () => {
         const activeRequestId = ++requestId;
         const params = new URLSearchParams(new FormData(form));
@@ -243,6 +261,7 @@ function initCatalogueSearch() {
         clearSuggestions();
     };
 
+    // Keep search results on the page without a full reload.
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
         await runSearch();
@@ -261,12 +280,14 @@ function initCatalogueSearch() {
         field.addEventListener('change', runSearch);
     });
 
+    // Reopen suggestions when the user returns to the search box.
     searchField?.addEventListener('focus', async () => {
         if (String(searchField.value || '').trim().length > 1 && !suggestions.children.length) {
             await runSearch();
         }
     });
 
+    // Let the user close the dropdown with the Escape key.
     searchField?.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             clearSuggestions();
@@ -274,6 +295,7 @@ function initCatalogueSearch() {
         }
     });
 
+    // Close the dropdown when the user clicks somewhere else.
     document.addEventListener('click', (event) => {
         if (!form.contains(event.target)) {
             clearSuggestions();
@@ -281,6 +303,7 @@ function initCatalogueSearch() {
     });
 }
 
+// Submit the review form with AJAX and update the page instantly.
 function initReviewForm() {
     const form = document.querySelector('[data-review-form]');
 
@@ -322,6 +345,7 @@ function initReviewForm() {
     });
 }
 
+// Handle location lookup, weather loading, cinema loading, and the map.
 function initTripTools() {
     const wrapper = document.querySelector('[data-nearby-tool]');
 
@@ -336,6 +360,7 @@ function initTripTools() {
     let map = null;
     let markers = [];
 
+    // Draw the map and place pins for the user and nearby cinemas.
     const renderMap = (origin, cinemas) => {
         if (!window.L) {
             return;
@@ -365,6 +390,7 @@ function initTripTools() {
         map.setView([origin.lat, origin.lng], 12);
     };
 
+    // Show the nearby cinema list under the map.
     const renderCinemas = (cinemas) => {
         cinemaList.innerHTML = cinemas.length
             ? cinemas
@@ -383,6 +409,7 @@ function initTripTools() {
             : '<p>No cinema results were returned for this area.</p>';
     };
 
+    // Load all live trip data for a set of coordinates.
     const loadData = async (coords, label = 'Saved location loaded.') => {
         status.textContent = 'Loading nearby cinemas and weather...';
         storeLocation(coords);
@@ -406,6 +433,7 @@ function initTripTools() {
         }
     };
 
+    // Ask the browser for the user's current location.
     button.addEventListener('click', () => {
         if (!navigator.geolocation) {
             status.textContent = 'Geolocation is not available on this device.';
@@ -431,6 +459,7 @@ function initTripTools() {
 
     const coords = savedLocation();
 
+    // Reuse the saved location when the page loads again.
     if (coords) {
         loadData(coords);
     }

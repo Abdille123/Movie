@@ -4,8 +4,14 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 
+/**
+ * This service gets weather data for cinema trips.
+ */
 class WeatherService
 {
+    /**
+     * Load simple weather details for the chosen location.
+     */
     public function currentForCinemaTrip(float $latitude, float $longitude): array
     {
         $response = Http::acceptJson()
@@ -48,6 +54,9 @@ class WeatherService
         ];
     }
 
+    /**
+     * Turn weather codes into short plain-English labels.
+     */
     private function weatherSummary(int $code): string
     {
         return match (true) {

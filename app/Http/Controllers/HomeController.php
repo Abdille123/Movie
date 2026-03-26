@@ -8,12 +8,18 @@ use App\Models\Showtime;
 use App\Services\MovieSyncService;
 use Illuminate\View\View;
 
+/**
+ * This controller builds the home page.
+ */
 class HomeController extends Controller
 {
     public function __construct(
         private readonly MovieSyncService $movieSyncService,
     ) {}
 
+    /**
+     * Show featured movies, upcoming showtimes, and quick stats.
+     */
     public function __invoke(): View
     {
         $this->movieSyncService->syncFeaturedMovies();

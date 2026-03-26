@@ -1,3 +1,4 @@
+{{-- Reusable card for one saved review --}}
 <article class="review-card">
     <div class="review-head">
         <strong>{{ $review->author_name }}</strong>

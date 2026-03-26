@@ -5,13 +5,22 @@ namespace App\Services;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 
+/**
+ * This service talks to the OMDb API.
+ */
 class OmdbService
 {
+    /**
+     * Check if an OMDb API key has been added.
+     */
     public function isConfigured(): bool
     {
         return filled(config('services.omdb.key'));
     }
 
+    /**
+     * Load one movie from OMDb by its IMDb ID.
+     */
     public function findByImdbId(string $imdbId): ?array
     {
         if (! $this->isConfigured()) {
@@ -38,6 +47,9 @@ class OmdbService
         return $response->json();
     }
 
+    /**
+     * Search OMDb for movies that match a text query.
+     */
     public function search(string $query, int $page = 1): array
     {
         if (! $this->isConfigured()) {

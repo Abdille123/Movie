@@ -6,12 +6,18 @@ use App\Models\Movie;
 use App\Services\MovieSyncService;
 use Illuminate\View\View;
 
+/**
+ * This controller handles the main movie pages.
+ */
 class MovieController extends Controller
 {
     public function __construct(
         private readonly MovieSyncService $movieSyncService,
     ) {}
 
+    /**
+     * Show the full movie list and the filter options.
+     */
     public function index(): View
     {
         $this->movieSyncService->syncFeaturedMovies();
@@ -33,6 +39,9 @@ class MovieController extends Controller
         return view('movies.index', compact('movies', 'genres'));
     }
 
+    /**
+     * Show one movie with its details, reviews, and related titles.
+     */
     public function show(Movie $movie): View
     {
         $movie = $this->movieSyncService->refreshMovie($movie);

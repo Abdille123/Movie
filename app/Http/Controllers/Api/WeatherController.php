@@ -7,12 +7,18 @@ use App\Services\WeatherService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * This API controller returns the weather for the chosen location.
+ */
 class WeatherController extends Controller
 {
     public function __construct(
         private readonly WeatherService $weatherService,
     ) {}
 
+    /**
+     * Validate the location and return a simple weather summary.
+     */
     public function show(Request $request): JsonResponse
     {
         $validated = $request->validate([

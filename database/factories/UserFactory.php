@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
+ * This factory creates fake users for tests.
+ *
  * @extends Factory<User>
  */
 class UserFactory extends Factory
@@ -18,9 +20,7 @@ class UserFactory extends Factory
     protected static ?string $password;
 
     /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
+     * Build one basic fake user.
      */
     public function definition(): array
     {
@@ -34,7 +34,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Make a user whose email has not been verified yet.
      */
     public function unverified(): static
     {

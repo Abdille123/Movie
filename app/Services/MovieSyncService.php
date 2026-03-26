@@ -6,12 +6,18 @@ use App\Models\Movie;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
+/**
+ * This service keeps local movies in sync with OMDb and IMDb-linked data.
+ */
 class MovieSyncService
 {
     public function __construct(
         private readonly OmdbService $omdb,
     ) {}
 
+    /**
+     * Refresh the featured movies we want on the site.
+     */
     public function syncFeaturedMovies(bool $force = false): void
     {
         if (! $this->omdb->isConfigured()) {
@@ -33,6 +39,9 @@ class MovieSyncService
         });
     }
 
+    /**
+     * Import matching OMDb movies when the user searches.
+     */
     public function syncSearchResults(string $query): void
     {
         if (! $this->omdb->isConfigured() || strlen($query) < 2) {
@@ -48,6 +57,9 @@ class MovieSyncService
         }
     }
 
+    /**
+     * Refresh one movie if its live data is getting old.
+     */
     public function refreshMovie(Movie $movie): Movie
     {
         if (! $this->omdb->isConfigured() || blank($movie->imdb_id)) {
@@ -64,6 +76,9 @@ class MovieSyncService
         ]) ?? $movie;
     }
 
+    /**
+     * Find one OMDb movie and save it into our database.
+     */
     public function syncByImdbId(string $imdbId, array $overrides = []): ?Movie
     {
         $payload = $this->omdb->findByImdbId($imdbId);
@@ -92,6 +107,9 @@ class MovieSyncService
         return $movie->fresh();
     }
 
+    /**
+     * Turn raw OMDb data into the movie fields our app uses.
+     */
     private function mapPayloadToAttributes(array $payload): array
     {
         $imdbId = (string) ($payload['imdbID'] ?? Str::lower(Str::random(8)));
@@ -120,6 +138,9 @@ class MovieSyncService
         ];
     }
 
+    /**
+     * Pick a colour theme based on the movie genre.
+     */
     private function toneFromGenre(string $genres): string
     {
         $genre = Str::of($genres)->lower();
@@ -134,6 +155,9 @@ class MovieSyncService
         };
     }
 
+    /**
+     * Pull the runtime number out of text like "136 min".
+     */
     private function parseRuntime(string $runtime): int
     {
         preg_match('/(\d+)/', $runtime, $matches);
@@ -141,6 +165,9 @@ class MovieSyncService
         return max(1, (int) ($matches[1] ?? 0));
     }
 
+    /**
+     * Pull the year out of text and fall back to the current year if needed.
+     */
     private function parseYear(string $year): int
     {
         preg_match('/(\d{4})/', $year, $matches);
@@ -148,6 +175,9 @@ class MovieSyncService
         return (int) ($matches[1] ?? now()->year);
     }
 
+    /**
+     * Ignore empty poster values and keep only real URLs.
+     */
     private function normalisePoster(string $poster): ?string
     {
         $poster = trim($poster);
@@ -159,6 +189,9 @@ class MovieSyncService
         return $poster;
     }
 
+    /**
+     * Remove blank values and the "N/A" placeholder.
+     */
     private function cleanField(string $value): ?string
     {
         $value = trim($value);

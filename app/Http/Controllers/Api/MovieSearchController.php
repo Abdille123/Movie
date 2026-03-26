@@ -8,12 +8,18 @@ use App\Services\MovieSyncService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * This API controller powers the AJAX movie search.
+ */
 class MovieSearchController extends Controller
 {
     public function __construct(
         private readonly MovieSyncService $movieSyncService,
     ) {}
 
+    /**
+     * Return filtered movie cards and quick suggestion links.
+     */
     public function index(Request $request): JsonResponse
     {
         $search = trim((string) $request->string('q'));

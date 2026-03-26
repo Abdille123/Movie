@@ -7,10 +7,16 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
+/**
+ * These tests check the main movie site features.
+ */
 class MovieSiteTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Start each test with the sample app data in place.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -18,6 +24,9 @@ class MovieSiteTest extends TestCase
         $this->seed();
     }
 
+    /**
+     * Make sure the home page loads and shows sample content.
+     */
     public function test_home_page_loads_seeded_content(): void
     {
         $response = $this->get('/');
@@ -28,6 +37,9 @@ class MovieSiteTest extends TestCase
             ->assertSee('Inception');
     }
 
+    /**
+     * Make sure movie search returns the right filtered result.
+     */
     public function test_catalogue_search_returns_filtered_html(): void
     {
         $response = $this->getJson('/api/movies/search?q=inception');
@@ -39,6 +51,9 @@ class MovieSiteTest extends TestCase
         $this->assertStringContainsString('Inception', $response->json('html'));
     }
 
+    /**
+     * Make sure the AJAX review form saves a review.
+     */
     public function test_review_can_be_posted_with_ajax(): void
     {
         $movie = Movie::query()->firstOrFail();
@@ -61,6 +76,9 @@ class MovieSiteTest extends TestCase
         ]);
     }
 
+    /**
+     * Make sure the weather API response is turned into simple app data.
+     */
     public function test_weather_api_transforms_response(): void
     {
         Http::fake([
@@ -84,6 +102,9 @@ class MovieSiteTest extends TestCase
             ->assertJsonPath('temperature', 13);
     }
 
+    /**
+     * Make sure nearby cinema data is cleaned up correctly.
+     */
     public function test_cinema_api_transforms_nearby_results(): void
     {
         Http::fake([
@@ -109,6 +130,9 @@ class MovieSiteTest extends TestCase
             ->assertJsonPath('cinemas.0.name', 'Sample Cinema');
     }
 
+    /**
+     * Make sure OMDb search results can be saved into the local database.
+     */
     public function test_catalogue_search_can_import_omdb_results(): void
     {
         config()->set('services.omdb.key', 'test-key');

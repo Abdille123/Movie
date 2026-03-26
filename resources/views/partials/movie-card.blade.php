@@ -1,3 +1,4 @@
+{{-- Reusable card used in the home page and movie results grid --}}
 <article class="movie-card tone-{{ $movie->tone }}">
     <div class="movie-poster">
         @if ($movie->poster_url)

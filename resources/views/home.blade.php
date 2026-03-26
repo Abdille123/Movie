@@ -3,6 +3,7 @@
 @section('title', 'ReelRoute | Home')
 
 @section('content')
+    {{-- Main welcome section with the primary actions --}}
     <section class="section-block simple-hero">
         <div class="simple-hero-copy">
             <h1>Plan a film night with live showtimes, nearby cinemas, and weather-aware travel.</h1>
@@ -14,6 +15,7 @@
         </div>
     </section>
 
+    {{-- Saved shortlist on the left and simple site stats on the right --}}
     <section class="dashboard-grid">
         <article class="section-block">
             <div class="section-heading">
@@ -46,6 +48,7 @@
         </section>
     </section>
 
+    {{-- Featured movies shown on the home page --}}
     <section class="section-block">
         <div class="section-heading">
             <div>
@@ -62,6 +65,7 @@
         </div>
     </section>
 
+    {{-- Upcoming showtimes pulled from the database --}}
     <section class="section-block schedule-section">
         <div class="section-heading">
             <div>

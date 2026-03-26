@@ -14,6 +14,7 @@
     </head>
     <body>
         <div class="site-shell">
+            {{-- Main site header with navigation, weather, and shortlist count --}}
             <header class="site-header">
                 <div class="header-main">
                     <a class="brand" href="{{ route('home') }}">
@@ -44,10 +45,12 @@
                 </div>
             </header>
 
+            {{-- Show a simple success message after normal form posts --}}
             @if (session('status'))
                 <div class="flash-banner">{{ session('status') }}</div>
             @endif
 
+            {{-- Each page drops its main content into this area --}}
             <main class="page-frame">
                 @yield('content')
             </main>

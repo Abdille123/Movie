@@ -7,8 +7,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
+/**
+ * This controller saves user reviews.
+ */
 class ReviewController extends Controller
 {
+    /**
+     * Save a new review and return either JSON or a normal redirect.
+     */
     public function store(Request $request, Movie $movie): JsonResponse|RedirectResponse
     {
         $validated = $request->validate([

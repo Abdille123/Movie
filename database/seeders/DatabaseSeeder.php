@@ -7,12 +7,19 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+/**
+ * This seeder adds the starter movies, showtimes, and reviews.
+ */
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
+    /**
+     * Fill the database with sample content for the app.
+     */
     public function run(): void
     {
+        // This is the starter catalogue used by the site and tests.
         $movies = [
             [
                 'imdb_id' => 'tt1375666',
@@ -153,11 +160,13 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($movies as $movieData) {
+            // Split the related records away before saving the main movie.
             $showtimes = $movieData['showtimes'];
             $reviews = $movieData['reviews'];
 
             unset($movieData['showtimes'], $movieData['reviews']);
 
+            // Save the movie first, then attach its showtimes and reviews.
             $movie = Movie::query()->create($movieData);
             $movie->showtimes()->createMany($showtimes);
             $movie->reviews()->createMany($reviews);

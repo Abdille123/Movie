@@ -3,6 +3,7 @@
 @section('title', 'ReelRoute | Movies')
 
 @push('head')
+    {{-- Load Leaflet so the page can show the cinema map --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 @endpush
@@ -15,6 +16,7 @@
             </div>
         </div>
 
+        {{-- AJAX search box with filters and suggestion dropdown --}}
         <form class="filters-card" data-catalogue-form action="{{ route('api.movies.search') }}" method="get">
             <div class="field-group search-stack">
                 <label for="search">Search movies</label>
@@ -46,6 +48,7 @@
             <p class="results-note">AJAX search is always on. Showing <strong data-results-count>{{ $movies->count() }}</strong> movies.</p>
         </form>
 
+        {{-- Live location tools on the left and the shortlist on the right --}}
         <div class="utility-grid">
             <article class="tool-card" id="trip-tools" data-nearby-tool>
                 <h2>Use your location to find nearby cinemas.</h2>
@@ -65,6 +68,7 @@
             </article>
         </div>
 
+        {{-- Main movie results grid --}}
         <div class="movie-grid" data-movie-grid>
             @foreach ($movies as $movie)
                 @include('partials.movie-card', ['movie' => $movie])

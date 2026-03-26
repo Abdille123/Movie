@@ -4,8 +4,14 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 
+/**
+ * This service finds cinemas near the user's location.
+ */
 class CinemaService
 {
+    /**
+     * Ask OpenStreetMap data for nearby cinemas.
+     */
     public function nearby(float $latitude, float $longitude, int $radiusMeters = 8000): array
     {
         $query = <<<QUERY
@@ -41,6 +47,9 @@ class CinemaService
             ->all();
     }
 
+    /**
+     * Clean one raw cinema result and add distance data.
+     */
     private function transformCinema(array $cinema, float $originLat, float $originLng): ?array
     {
         $latitude = data_get($cinema, 'lat', data_get($cinema, 'center.lat'));
@@ -70,6 +79,9 @@ class CinemaService
         ];
     }
 
+    /**
+     * Work out the distance between two map points in kilometres.
+     */
     private function distanceKm(float $lat1, float $lng1, float $lat2, float $lng2): float
     {
         $earthRadius = 6371;
