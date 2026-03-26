@@ -2,12 +2,6 @@
 
 @section('title', 'ReelRoute | Movies')
 
-@push('head')
-    {{-- Load Leaflet so the page can show the cinema map --}}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-@endpush
-
 @section('content')
     <section class="section-block">
         <div class="section-heading">
@@ -48,16 +42,21 @@
             <p class="results-note"><span data-search-feedback>AJAX search is always on.</span> Showing <strong data-results-count>{{ $movies->count() }}</strong> movies.</p>
         </form>
 
-        {{-- Live location tools on the left and the shortlist on the right --}}
+        {{-- Camera tool on the left and the shortlist on the right --}}
         <div class="utility-grid">
-            <article class="tool-card" id="trip-tools" data-nearby-tool>
-                <h2>Use your location to find nearby cinemas.</h2>
-                <button class="button button-primary" type="button" data-locate-button>Use my current location</button>
-                <div class="map-frame" data-map></div>
-                <p class="status-copy" data-location-status>Waiting for a location request.</p>
-                <div class="cinema-list" data-cinema-list>
-                    <p>No live cinema results yet.</p>
+            <article class="tool-card" data-camera-tool>
+                <h2>Use your camera to save a movie night snapshot.</h2>
+                <div class="camera-frame">
+                    <video class="camera-preview" data-camera-preview playsinline autoplay muted hidden></video>
+                    <img class="camera-shot" data-camera-shot alt="Saved movie night snapshot" hidden>
+                    <div class="camera-empty" data-camera-empty>Start the camera to frame a quick photo before the film starts.</div>
                 </div>
+                <div class="card-actions">
+                    <button class="button button-primary" type="button" data-camera-start>Start camera</button>
+                    <button class="button button-secondary" type="button" data-camera-capture hidden>Take snapshot</button>
+                    <button class="button button-ghost" type="button" data-camera-reset hidden>Use camera again</button>
+                </div>
+                <p class="status-copy" data-camera-status>Camera access stays in the browser and does not use tracking.</p>
             </article>
 
             <article class="tool-card">

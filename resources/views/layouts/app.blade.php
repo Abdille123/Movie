@@ -45,9 +45,9 @@
 
                 <div class="header-tools">
                     <div class="weather-pill" data-header-weather>
-                        <span data-header-weather-label>Weather</span>
-                        <strong data-header-weather-temp>Set location</strong>
-                        <small data-header-weather-meta>Use the movies page to load your local forecast.</small>
+                        <span data-header-weather-label>Campus weather</span>
+                        <strong data-header-weather-temp>Loading...</strong>
+                        <small data-header-weather-meta>Refreshing the Wolverhampton forecast.</small>
                     </div>
 
                     <div class="planner-pill">

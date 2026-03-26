@@ -1,11 +1,15 @@
 import { fetchJson } from '../shared/fetchJson.js';
-import { savedLocation } from './location.js';
+
+const defaultWeatherCoords = {
+    lat: 52.5862,
+    lng: -2.1288,
+};
 
 // Write the latest weather text into the header bar.
 export function setHeaderWeather({
-    label = 'Weather',
-    headline = 'Set location',
-    meta = 'Use the movies page to load your local forecast.',
+    label = 'Campus weather',
+    headline = 'Loading...',
+    meta = 'Refreshing the Wolverhampton forecast.',
 } = {}) {
     const labelNode = document.querySelector('[data-header-weather-label]');
     const tempNode = document.querySelector('[data-header-weather-temp]');
@@ -60,17 +64,10 @@ async function refreshHeaderWeather(coords) {
 
 // Start the header weather widget on page load.
 export function initHeaderWeather() {
-    const coords = savedLocation();
-
-    if (!coords) {
-        setHeaderWeather();
-        return;
-    }
-
     setHeaderWeather({
         headline: 'Loading...',
-        meta: 'Refreshing forecast for your saved location.',
+        meta: 'Refreshing the Wolverhampton forecast.',
     });
 
-    refreshHeaderWeather(coords);
+    refreshHeaderWeather(defaultWeatherCoords);
 }

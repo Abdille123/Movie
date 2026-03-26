@@ -439,8 +439,7 @@ h3 {
     overflow-y: auto;
 }
 
-.planner-list,
-.cinema-list {
+.planner-list {
     display: grid;
     gap: 0.8rem;
 }
@@ -573,13 +572,31 @@ h3 {
     font-size: 1.03rem;
 }
 
-.map-frame {
+.camera-frame {
     min-height: 18rem;
-    margin-top: 0.85rem;
+    margin: 0.85rem 0;
     border-radius: 18px;
     overflow: hidden;
     border: 1px solid var(--line);
-    background: rgba(29, 29, 35, 0.06);
+    background:
+        linear-gradient(180deg, rgba(31, 22, 17, 0.08), rgba(31, 22, 17, 0.03)),
+        #fff7ee;
+}
+
+.camera-preview,
+.camera-shot {
+    width: 100%;
+    height: 18rem;
+    object-fit: cover;
+}
+
+.camera-empty {
+    min-height: 18rem;
+    display: grid;
+    place-items: center;
+    padding: 1.25rem;
+    text-align: center;
+    color: var(--muted);
 }
 
 .detail-hero {
