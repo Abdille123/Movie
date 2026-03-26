@@ -25,7 +25,20 @@
                         </span>
                     </a>
 
-                    <nav class="site-nav">
+                    <button
+                        class="nav-toggle"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="site-nav"
+                        data-nav-toggle
+                    >
+                        <span class="sr-only">Toggle navigation</span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+
+                    <nav id="site-nav" class="site-nav" data-site-nav>
                         <a href="{{ route('movies.index') }}" @class(['is-active' => request()->routeIs('movies.*')])>Movies</a>
                     </nav>
                 </div>
